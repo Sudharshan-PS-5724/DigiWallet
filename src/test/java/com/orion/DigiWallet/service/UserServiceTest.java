@@ -118,22 +118,22 @@ class UserServiceTest {
         // Use assertions to verify the correctness of the returned greeting messages
 
         //remove @Disabled after implementing write test actual method
-        @Disabled
         @Test
         void shouldReturnAdminGreeting_whenRoleIsAdmin() {
-
+            String greetingMsg = userService.generateGreetingMsg("ADMIN");
+            assertEquals("Admin access enabled for you!",greetingMsg);
         }
 
-        @Disabled
         @Test
         void shouldReturnUserGreeting_whenRoleIsNotAdmin() {
-
+            String greetingMsg = userService.generateGreetingMsg("USER");
+            assertEquals("User access granted for you!",greetingMsg);
         }
 
-        @Disabled
         @Test
         void shouldReturnUserGreeting_whenRoleIsNull() {
-
+            String greetingMsg = userService.generateGreetingMsg(null);
+            assertEquals("Unknown User access",greetingMsg);
         }
     }
 
@@ -158,20 +158,18 @@ class UserServiceTest {
         // Uncomment the below assertions after implementing greeting message logic
         //ONLY IF 1.4 IS DONE
 
-       // assertNotNull(result.get(0).getUserGreetingMessage());
-        // assertNotNull(result.get(1).getUserGreetingMessage());
+       assertNotNull(result.get(0).getUserGreetingMessage());
+       assertNotNull(result.get(1).getUserGreetingMessage());
 
-        // assertTrue(result.get(0).getUserGreetingMessage().contains("User access"));
-        // assertTrue(result.get(1).getUserGreetingMessage().contains("Admin access"));
+       assertTrue(result.get(0).getUserGreetingMessage().contains("User access"));
+       assertTrue(result.get(1).getUserGreetingMessage().contains("Admin access"));
 
-        // Verify repository interaction
         verify(mockUserRepository, times(1)).findAll();
     }
 
     //TODO: 1.9
     // implement the unit test for getUserById method in UserService
     // remove @Disabled after implementing write test actual method
-    @Disabled
     @Test
     void getUserById_shouldReturnUserWithGreetingMessage() {
         // GIVEN

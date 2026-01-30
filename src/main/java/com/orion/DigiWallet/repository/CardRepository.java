@@ -23,4 +23,3 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     // Write a method to check if a card exists by cardNumber
     boolean existsByCardNumber(String cardNumber);
 }
-

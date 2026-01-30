@@ -11,11 +11,11 @@ public class CardService {
 
     //TODO: 2.1.1
     // create a private final field for CardRepository (dependency)
-
+    private CardRepository cardRepository;
 
     //TODO: 2.1.2
     // create a constructor to inject CardRepository
-
+    @A
 
     //TODO: 2.1.3
     // -----------------------------------------

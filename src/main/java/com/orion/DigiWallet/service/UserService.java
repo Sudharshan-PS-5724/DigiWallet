@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService  {
@@ -28,33 +29,31 @@ public class UserService  {
 
         List<User> users = userRepository.findAll();
         logger.info("Total users fetched: {}", users.size());
+        for (User user : users){
+            String greetMsg = generateGreetingMsg(user.getRole());
+        }
         return users;
+
         //TODO: 1.4
         // For each user in the list, call generateGreetingMsg(user)
         // before returning the list
         // Hint: Use a for-each loop to iterate through the users list
         // test the result on swagger or postman
 
-
     }
 
     public User getUserById(Long id) {
+        logger.info("Fetching user with id {}", id);
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            logger.warn("User with id {} not found", id);
+            return null;
+        }
 
-        //TODO: 1.1
-        // Log incoming request with user ID
-        // Example: logger.info("Fetching user with id {}", id);
-        // Fetch user from repository
-        // test the result on swagger or postman
-        return null;
-
-        //TODO: 1.3
-        // Before returning the User object, call generateGreetingMsg(role)
-        // role as string can be obtained from user.getRole()
-        // Example: String greeting = generateGreetingMsg(user.getRole());
-        // Then set this greeting message into the User object
-        // Hint: Use user.setUserGreetingMessage(greeting)
-        // test the result on swagger or postman
-
+        User user = optionalUser.get();
+        String greeting = generateGreetingMsg(user.getRole());
+        user.setUserGreetingMessage(greeting);
+        return user;
     }
 
     @Transactional
@@ -68,17 +67,14 @@ public class UserService  {
         return savedUser;
     }
 
-    String generateGreetingMsg(String role) {
+    public String generateGreetingMsg(String role) {
+        if (role == null) return "Unknown User access";
 
-        //TODO: 1.2
-        // Perform a case-insensitive check to determine the role.
-        // If the role is ADMIN, append an admin-specific message
-        // Example: "Admin access enabled"
-        // If the role is NOT ADMIN, append a standard user message
-        // Example: "User access"
-        // return the complete greeting message as a String
-        // write a unit test to verify this method works as expected
-        return null;
+        if ("ADMIN".equalsIgnoreCase(role)) {
+            return "Admin access enabled for you!";
+        } else {
+            return "User access granted for you!";
+        }
     }
 
     public User updateUserStatus(Long id) {

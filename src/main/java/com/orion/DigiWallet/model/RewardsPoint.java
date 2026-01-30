@@ -1,31 +1,67 @@
 package com.orion.DigiWallet.model;
 
-//TODO: 3.3
-// Define this class as a JPA entity mapped to "rewards_point" table
-// ADD @table annotation to specify the table name as "rewards_point"
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "rewards_point")
 public class RewardsPoint {
 
-    //TODO: 3.3.1
-    // Define id as primary key with auto-generation strategy
+    // 3.3.1: Primary key with auto-generation
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    //TODO: 3.3.2
-    // Define points field to store the number of reward points
+    // 3.3.2: Points field
+    @Column(name = "points", nullable = true)
+    private Integer points;
 
-    //TODO: 3.3.3
-    // Define wallet field to establish many-to-one relationship with Wallet entity
-    // Use @JoinColumn with name "wallet_id" and make it NOT NULL
+    // 3.3.3: Many-to-one relationship with Wallet
+    @ManyToOne
+    @JoinColumn(name = "wallet_id", nullable = false)
+    private Wallet wallet;
 
-    //TODO: 3.3.4
-    // Define updatedAt field to store the timestamp of last update
-    // This value should be automatically updated whenever points are modified
+    // 3.3.4: Timestamp of last update
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
-    //TODO: 3.3.5
-    // Generate getters and setters for all fields
+    // Automatically update timestamp before persisting/updating
+    @PrePersist
+    @PreUpdate
+    public void updateTimestamp() {
+        updatedAt = LocalDateTime.now();
+    }
 
-    //TODO: 3.3.6
-    // THIS TABLE IS NOT THERE IN MYSQL SO WHEN YOU RUN IT JPA WILL CREATE IT AUTOMATICALLY
-    // GO TO MYSQL AND VERIFY IF THE TABLE IS CREATED OR NOT
-    // ALSO CHECK FIELD NAMES AND TYPES
-    // WITH CONSTRAINTS
+    // 3.3.5: Getters and Setters
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public void setPoints(Integer points) {
+        this.points = points;
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
