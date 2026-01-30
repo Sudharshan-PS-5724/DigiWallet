@@ -4,6 +4,8 @@ import com.orion.DigiWallet.model.Card;
 import com.orion.DigiWallet.repository.CardRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 //TODO: 2.1.0
 // annotate the class to be a service component
 @Service
@@ -11,11 +13,13 @@ public class CardService {
 
     //TODO: 2.1.1
     // create a private final field for CardRepository (dependency)
-    private CardRepository cardRepository;
+    private final CardRepository cardRepository;
 
     //TODO: 2.1.2
     // create a constructor to inject CardRepository
-    @A
+    public CardService(CardRepository cardRepository) {
+        this.cardRepository = cardRepository;
+    }
 
     //TODO: 2.1.3
     // -----------------------------------------
@@ -27,9 +31,12 @@ public class CardService {
         // STEP 1: Check if card number already exists
         // to ensure uniqueness of card numbers in the system
         // throw runtime exception if it exists "Card number already exists"
+        if (cardRepository.existsByCardNumber(card.getCardNumber())) {
+            throw new RuntimeException("Card number already exists");
+        }
 
         // STEP 2: Save and return the card
-        return null;
+        return cardRepository.save(card);
     }
 
     //TODO: 2.1.4
@@ -41,7 +48,8 @@ public class CardService {
 
         // STEP 1: Fetch card by ID
         // throw runtime exception if not found "Card not found with id: " + id
-        return null;
+        return cardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Card not found with id: " + id));
     }
 
     //TODO: 2.1.5
@@ -53,14 +61,21 @@ public class CardService {
 
         // STEP 1: Fetch existing card
         // throw runtime exception if not found "Card not found with id: " + id
-       ;
+        Card existingCard = cardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Card not found with id: " + id));
 
         // STEP 2: Update allowed fields
         // For simplicity, assume all fields except id and cardNumber can be updated
         // from updatedCard object get the values and set them to existingCard which you fetched in STEP 1
+        // STEP 2: Update allowed fields
+        // For simplicity, assume all fields except id and cardNumber can be updated
+        // from updatedCard object get the values and set them to existingCard which you fetched in STEP 1
+        existingCard.setCardType(updatedCard.getCardType());
+        existingCard.setExpiryDate(updatedCard.getExpiryDate());
+        existingCard.setStatus(updatedCard.getStatus());
 
         // STEP 3: Save updated card
-        return null;
+        return cardRepository.save(existingCard);
     }
 
     //TODO: 2.1.6
@@ -72,8 +87,11 @@ public class CardService {
 
         // STEP 1: Check if card exists
         // throw runtime exception if not found "Card not found with id: " + id
+        if (!cardRepository.existsById(id)) {
+            throw new RuntimeException("Card not found with id: " + id);
+        }
 
         // STEP 2: Delete card
-
+        cardRepository.deleteById(id);
     }
 }
